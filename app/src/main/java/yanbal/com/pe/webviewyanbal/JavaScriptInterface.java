@@ -40,7 +40,7 @@ public class JavaScriptInterface {
         if(blobUrl.startsWith("blob")){
             return "javascript: var xhr = new XMLHttpRequest();" +
                     "xhr.open('GET', '"+ blobUrl +"', true);" +
-                    "xhr.setRequestHeader('Content-type','application/pdf');" +
+                    "xhr.setRequestHeader('Content-type','image/png');" +
                     "xhr.responseType = 'blob';" +
                     "xhr.onload = function(e) {" +
                     "    if (this.status == 200) {" +
@@ -60,10 +60,10 @@ public class JavaScriptInterface {
     private void convertBase64StringToPdfAndStoreIt(String base64PDf) throws IOException {
         Log.e("BASE 64", base64PDf);
         final int notificationId = 1;
-        String currentDateTime = DateFormat.getDateTimeInstance().format(new Date());
+        String currentDateTime = System.currentTimeMillis() +"";
         final File dwldsPath = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS) + "/YourFileName_" + currentDateTime + "_.pdf");
-        byte[] pdfAsBytes = Base64.decode(base64PDf.replaceFirst("^data:application/pdf;base64,", ""), 0);
+                Environment.DIRECTORY_DOWNLOADS) + "/YourFileName_" + currentDateTime + "_.png");
+        byte[] pdfAsBytes = Base64.decode(base64PDf.replaceFirst("^data:image/png;base64,", ""), 0);
         FileOutputStream os;
         os = new FileOutputStream(dwldsPath, false);
         os.write(pdfAsBytes);
@@ -73,7 +73,7 @@ public class JavaScriptInterface {
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
             Uri apkURI = FileProvider.getUriForFile(context,context.getApplicationContext().getPackageName() + ".provider", dwldsPath);
-            intent.setDataAndType(apkURI, MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf"));
+            intent.setDataAndType(apkURI, MimeTypeMap.getSingleton().getMimeTypeFromExtension("png"));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             PendingIntent pendingIntent = PendingIntent.getActivity(context,1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
             String CHANNEL_ID = "MYCHANNEL";
@@ -114,6 +114,6 @@ public class JavaScriptInterface {
                 }
             }
         }
-        Toast.makeText(context, "PDF FILE DOWNLOADED!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "IMAGE FILE DOWNLOADED!", Toast.LENGTH_SHORT).show();
     }
 }
